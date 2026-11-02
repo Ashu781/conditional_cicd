@@ -1,0 +1,45 @@
+name: cicd
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-execution:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v4
+
+      - name: test execution type 1
+        run: bash greetings.sh
+
+      - name: test execution type 2
+        run: bash greetings.sh Gayatri
+
+      - name: test execution type 3
+        run: bash greetings.sh --help
+
+  docker-build:
+    needs: test-execution
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: check docker tools
+        run: |
+          docker --version
+          docker compose version
+
+      - name: checkout repo
+        uses: actions/checkout@v4
+
+      - name: image build
+        run: docker build -t greet:v1 .
+
+      - name: container run
+        run: docker run --name greet_cont1 greet:v1
