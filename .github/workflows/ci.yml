@@ -25,6 +25,18 @@ jobs:
       - name: test execution type 3
         run: bash greetings.sh --help
 
+
+  tell-event:
+    runs-on: ubuntu-latest
+    steps:
+      - name: tell event
+        if: github.event_name == 'push'
+        run: echo "this is a push event"
+      - name: tell event
+        if: github.event_name == 'pull request'
+        run: echo "this is a pull request event"
+ 
+
   docker-build:
     needs: test-execution
     if: github.event_name == 'push'
